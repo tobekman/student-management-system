@@ -56,5 +56,12 @@ public class StudentRest {
         return Response.ok().build();
     }
 
+    @Path("name")
+    @GET
+    public Response getStudentWithLastName(@QueryParam("lastname") String lastName) {
+        List<Student> students = studentService.getStudentWithLastName(lastName);
+        return Response.ok(students).build();
+    }
+
 
 }

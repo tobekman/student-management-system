@@ -18,7 +18,8 @@ public class StudentService {
     }
 
     public List<Student> getAllStudents() {
-        return entityManager.createQuery("select s from Student s", Student.class).getResultList();
+        String query = "select s from Student s";
+        return entityManager.createQuery(query, Student.class).getResultList();
     }
 
     public Student getStudentWithId(Long id) {
@@ -32,6 +33,13 @@ public class StudentService {
     public void deleteStudent(Long id) {
         Student student = entityManager.find(Student.class, id);
         entityManager.remove(student);
+    }
+
+    public List<Student> getStudentWithLastName(String lastName) {
+        String query = "SELECT s FROM Student s WHERE s.lastName = :lastName";
+        return entityManager.createQuery(query, Student.class)
+                .setParameter("lastName", lastName)
+                .getResultList();
     }
 
 }
