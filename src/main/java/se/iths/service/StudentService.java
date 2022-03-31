@@ -18,7 +18,7 @@ public class StudentService {
     }
 
     public List<Student> getAllStudents() {
-        String query = "select s from Student s";
+        String query = "SELECT s FROM Student s";
         return entityManager.createQuery(query, Student.class).getResultList();
     }
 
@@ -39,6 +39,13 @@ public class StudentService {
         String query = "SELECT s FROM Student s WHERE s.lastName = :lastName";
         return entityManager.createQuery(query, Student.class)
                 .setParameter("lastName", lastName)
+                .getResultList();
+    }
+
+    public List<Student> getStudentWithEmail(String email) {
+        String query = "SELECT s FROM Student s WHERE s.email = :email";
+        return entityManager.createQuery(query, Student.class)
+                .setParameter("email", email)
                 .getResultList();
     }
 

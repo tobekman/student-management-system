@@ -10,11 +10,15 @@ public class Student {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @Column(nullable = false)
     private String firstName;
+
+    @Column(nullable = false)
     private String lastName;
 
-    @Column(unique = true)
+    @Column(nullable = false, unique = true)
     private String email;
+
     private String phoneNumber;
 
     public Student() {
@@ -25,6 +29,14 @@ public class Student {
         this.lastName = lastName;
         this.email = email;
         this.phoneNumber = phoneNumber;
+    }
+
+    public boolean informationIsMissing() {
+        return firstName == null || lastName == null || email == null;
+    }
+
+    public boolean phoneNumberIsMissing() {
+        return phoneNumber == null;
     }
 
     public Long getId() {
