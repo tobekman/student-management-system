@@ -70,6 +70,10 @@ public class StudentRest {
 
     @PUT
     public Response updateStudent(Student student) {
+        Student foundStudent = studentService.getStudentWithId(student.getId());
+        if(foundStudent == null) {
+            throw new StudentNotFoundException(student.getId());
+        }
         if(student.informationIsMissing() || student.phoneNumberIsMissing()) {
             throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
                     .entity("All fields needed to update.")
