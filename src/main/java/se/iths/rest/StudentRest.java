@@ -1,6 +1,9 @@
 package se.iths.rest;
 
 import se.iths.entity.Student;
+import se.iths.errors.EmailNotUniqueException;
+import se.iths.errors.MissingInformationException;
+import se.iths.errors.StudentNotFoundException;
 import se.iths.service.StudentService;
 
 import javax.inject.Inject;
@@ -25,10 +28,7 @@ public class StudentRest {
     public Response createStudent(Student student) {
 
         if(student.informationIsMissing()) {
-            throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
-                    .entity("You need to provide first name, last name and email.")
-                    .type(MediaType.TEXT_PLAIN_TYPE)
-                    .build());
+            throw new MissingInformationException("You need to provide first name, last name and email.");
         }
 
         List<Student> existingStudent = studentService.getStudentWithEmail(student.getEmail());
@@ -36,10 +36,7 @@ public class StudentRest {
             studentService.createStudent(student);
             return Response.status(Response.Status.CREATED).entity(student).build();
         } else {
-            throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
-                    .entity("Email address already exists in database.")
-                    .type(MediaType.TEXT_PLAIN_TYPE)
-                    .build());
+            throw new EmailNotUniqueException("Email address already exists in database.");
         }
 
     }
@@ -55,10 +52,7 @@ public class StudentRest {
     public Response getStudentWithId(@PathParam("id") Long id) {
         Student student = studentService.getStudentWithId(id);
         if(student == null) {
-            throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
-                    .entity("The student with ID " + id + " wasn't found in the database.")
-                    .type(MediaType.TEXT_PLAIN_TYPE)
-                    .build());
+            throw new StudentNotFoundException(id);
         }
         return Response.ok(student).build();
     }
@@ -68,10 +62,7 @@ public class StudentRest {
     public Response deleteStudent(@PathParam("id") Long id) {
         Student student = studentService.getStudentWithId(id);
         if(student == null) {
-            throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
-                    .entity("The student with ID " + id + " wasn't found in the database.")
-                    .type(MediaType.TEXT_PLAIN_TYPE)
-                    .build());
+            throw new StudentNotFoundException(id);
         }
         studentService.deleteStudent(id);
         return Response.ok("Student deleted.").build();
@@ -85,7 +76,6 @@ public class StudentRest {
                     .type(MediaType.TEXT_PLAIN_TYPE)
                     .build());
         }
-
         studentService.updateStudent(student);
         return Response.ok("Student updated").build();
     }
@@ -95,25 +85,9 @@ public class StudentRest {
     public Response getStudentWithLastName(@QueryParam("lastname") String lastName) {
         List<Student> students = studentService.getStudentWithLastName(lastName);
         if(students.isEmpty()) {
-            throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
-                    .entity("No students with the last name " + lastName + " was found in the database.")
-                    .type(MediaType.TEXT_PLAIN_TYPE)
-                    .build());
+            throw new StudentNotFoundException(lastName);
         }
         return Response.ok(students).build();
-    }
-
-    @Path("email")
-    @GET
-    public Response getStudentWithEmail(@QueryParam("email") String email) {
-        List<Student> student = studentService.getStudentWithEmail(email);
-        if(student.isEmpty()) {
-            throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
-                    .entity("The student with email " + email + " wasn't found in the database.")
-                    .type(MediaType.TEXT_PLAIN_TYPE)
-                    .build());
-        }
-        return Response.ok(student).build();
     }
 
 
