@@ -1,6 +1,7 @@
 package se.iths.errors;
 
-import javax.ws.rs.core.MediaType;
+import se.iths.util.ResponseMessage;
+
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
@@ -9,7 +10,10 @@ import javax.ws.rs.ext.Provider;
 public class EmailNotUniqueMapper implements ExceptionMapper<EmailNotUniqueException> {
     @Override
     public Response toResponse(EmailNotUniqueException e) {
-        return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage())
-                .type(MediaType.TEXT_PLAIN_TYPE).build();
+        ResponseMessage errorMessage = new ResponseMessage(Response.Status.BAD_REQUEST, e.getMessage());
+        return Response
+                .status(Response.Status.BAD_REQUEST)
+                .entity(errorMessage)
+                .build();
     }
 }

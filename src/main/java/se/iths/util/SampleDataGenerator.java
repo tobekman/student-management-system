@@ -1,12 +1,16 @@
 package se.iths.util;
 
 import se.iths.entity.Student;
+import se.iths.entity.Subject;
+import se.iths.entity.Teacher;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.ArrayList;
+import java.util.List;
 
 @Singleton
 @Startup
@@ -26,12 +30,33 @@ public class SampleDataGenerator {
         Student student6 = new Student("Emma", "Stone", "thestone@hotmail.com", "0785156521");
         Student student7 = new Student("Benedict", "Cumberbatch", "cumben@hotmail.com", "8718946512");
 
-        entityManager.persist(student1);
-        entityManager.persist(student2);
-        entityManager.persist(student3);
-        entityManager.persist(student4);
-        entityManager.persist(student5);
-        entityManager.persist(student6);
-        entityManager.persist(student7);
+        List<Student> students = new ArrayList<>();
+        students.add(student1);
+        students.add(student2);
+        students.add(student3);
+        students.add(student4);
+        students.add(student5);
+        students.add(student6);
+        students.add(student7);
+
+        Teacher teacher1 = new Teacher("Kate", "Winslet", "teacher1@school.com", "084615540");
+        Teacher teacher2 = new Teacher("Leonardo", "DiCaprio", "teacher2@school.com", "0708845123");
+        Teacher teacher3 = new Teacher("Denzel", "Washington", "teacher3@school.com", "07070809051");
+        Teacher teacher4 = new Teacher("Meryl", "Streep", "teacher4@school.com", "0874605464");
+
+        Subject subject1 = new Subject("Programming", teacher1,students);
+        Subject subject2 = new Subject("Biology", teacher2, students);
+        Subject subject3 = new Subject("Algebra", teacher3, students);
+        Subject subject4 = new Subject("Geometry", teacher3, students);
+        Subject subject5 = new Subject("Philosophy", teacher4, students);
+        Subject subject6 = new Subject("Political Science", teacher4, students);
+
+        entityManager.persist(subject1);
+        entityManager.persist(subject2);
+        entityManager.persist(subject3);
+        entityManager.persist(subject4);
+        entityManager.persist(subject5);
+        entityManager.persist(subject6);
+
     }
 }

@@ -1,10 +1,10 @@
 package se.iths.entity;
 
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.*;
 import java.util.List;
 
@@ -12,7 +12,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Student {
+public class Teacher {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -25,10 +25,10 @@ public class Student {
     private String email;
     private String phoneNumber;
 
-    @ManyToMany(mappedBy = "students", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "teacher")
     private List<Subject> subjects;
 
-    public Student(String firstName, String lastName, String email, String phoneNumber) {
+    public Teacher(String firstName, String lastName, String email, String phoneNumber) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -43,5 +43,8 @@ public class Student {
         return phoneNumber == null;
     }
 
-
+    @JsonbTransient
+    public List<Subject> getSubjects() {
+        return subjects;
+    }
 }

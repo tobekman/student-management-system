@@ -22,7 +22,7 @@ public class StudentService {
         return entityManager.createQuery(query, Student.class).getResultList();
     }
 
-    public Student getStudentWithId(Long id) {
+    public Student getStudentById(Long id) {
         return entityManager.find(Student.class, id);
     }
 

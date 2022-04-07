@@ -7,9 +7,9 @@ import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
 @Provider
-public class StudentNotFoundMapper implements ExceptionMapper<StudentNotFoundException> {
+public class SubjectNotFoundMapper implements ExceptionMapper<SubjectNotFoundException> {
     @Override
-    public Response toResponse(StudentNotFoundException e) {
+    public Response toResponse(SubjectNotFoundException e) {
         ResponseMessage errorMessage = new ResponseMessage(Response.Status.NOT_FOUND, e.getMessage());
         return Response
                 .status(Response.Status.NOT_FOUND)

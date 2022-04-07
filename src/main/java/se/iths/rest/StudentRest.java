@@ -5,6 +5,7 @@ import se.iths.errors.EmailNotUniqueException;
 import se.iths.errors.MissingInformationException;
 import se.iths.errors.StudentNotFoundException;
 import se.iths.service.StudentService;
+import se.iths.util.ResponseMessage;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
@@ -17,7 +18,7 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON)
 public class StudentRest {
 
-    StudentService studentService;
+    private final StudentService studentService;
 
     @Inject
     public StudentRest(StudentService studentService) {
@@ -49,8 +50,8 @@ public class StudentRest {
 
     @Path("{id}")
     @GET
-    public Response getStudentWithId(@PathParam("id") Long id) {
-        Student student = studentService.getStudentWithId(id);
+    public Response getStudentById(@PathParam("id") Long id) {
+        Student student = studentService.getStudentById(id);
         if(student == null) {
             throw new StudentNotFoundException(id);
         }
@@ -60,33 +61,32 @@ public class StudentRest {
     @Path("{id}")
     @DELETE
     public Response deleteStudent(@PathParam("id") Long id) {
-        Student student = studentService.getStudentWithId(id);
+        Student student = studentService.getStudentById(id);
         if(student == null) {
             throw new StudentNotFoundException(id);
         }
+
         studentService.deleteStudent(id);
-        return Response.ok("Student deleted.").build();
+        ResponseMessage responseMessage = new ResponseMessage(Response.Status.OK, "Student deleted");
+        return Response.ok(responseMessage).build();
     }
 
     @PUT
     public Response updateStudent(Student student) {
-        Student foundStudent = studentService.getStudentWithId(student.getId());
+        Student foundStudent = studentService.getStudentById(student.getId());
         if(foundStudent == null) {
             throw new StudentNotFoundException(student.getId());
         }
         if(student.informationIsMissing() || student.phoneNumberIsMissing()) {
-            throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
-                    .entity("All fields needed to update.")
-                    .type(MediaType.TEXT_PLAIN_TYPE)
-                    .build());
+            throw new MissingInformationException("All fields needed to update.");
         }
         studentService.updateStudent(student);
-        return Response.ok("Student updated").build();
+        return Response.ok(student).build();
     }
 
     @Path("name")
     @GET
-    public Response getStudentWithLastName(@QueryParam("lastname") String lastName) {
+    public Response getStudentByLastName(@QueryParam("lastname") String lastName) {
         List<Student> students = studentService.getStudentWithLastName(lastName);
         if(students.isEmpty()) {
             throw new StudentNotFoundException(lastName);
